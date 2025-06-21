@@ -17,3 +17,7 @@ def load_output_mfs(path: str) -> Dict[str, Dict[str, Any]]:
 
 def load_rules(path: str) -> List[Dict[str, Any]]:
     return load_json(path)
+
+
+def load_representatives(path: str) -> Dict[str, Dict[str, float]]:
+    return load_json(path)

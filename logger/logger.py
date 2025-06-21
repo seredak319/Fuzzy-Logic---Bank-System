@@ -32,7 +32,7 @@ class ResultLogger:
             logging.info(fn)
 
     def log_decision_start(self, decision: str):
-        logging.info(f"Computing decision {decision}")
+        logging.info(f"\n\nComputing decision {decision}\n")
 
     def log_decision_result(self, decision: str, result_t1: Any, result_t2: Any):
         logging.info(f"{decision} Type-1 result: {result_t1}")

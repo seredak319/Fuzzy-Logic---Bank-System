@@ -11,7 +11,20 @@
         {
           "and": [
             { "dependents": "high" },
-            { "age": "old" }
+            { "age": "old" },
+            { "inflow": "low" }
+          ]
+        },
+        {
+          "and": [
+            { "age": "young" },
+            { "dependents": "high" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "low" },
+            { "age": "young" }
           ]
         }
       ]
@@ -30,7 +43,14 @@
         {
           "and": [
             { "dependents": "medium" },
-            { "age": "middle_aged" }
+            { "age": "middle_aged" },
+            { "inflow": "medium" }
+          ]
+        },
+        {
+          "and": [
+            { "income_sum": "medium" },
+            { "age": "young" }
           ]
         }
       ]
@@ -49,7 +69,14 @@
         {
           "and": [
             { "dependents": "low" },
-            { "age": "young" }
+            { "age": "young" },
+            { "income_sum": "high" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "high" },
+            { "age": "middle_aged" }
           ]
         }
       ]
@@ -68,7 +95,14 @@
         {
           "and": [
             { "income_sum": "low" },
-            { "age": "old" }
+            { "age": "old" },
+            { "dependents": "high" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "low" },
+            { "income_sum": "low" }
           ]
         }
       ]
@@ -87,7 +121,14 @@
         {
           "and": [
             { "income_sum": "medium" },
-            { "age": "middle_aged" }
+            { "age": "middle_aged" },
+            { "dependents": "medium" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "medium" },
+            { "income_sum": "high" }
           ]
         }
       ]
@@ -106,7 +147,14 @@
         {
           "and": [
             { "income_sum": "high" },
-            { "age": "young" }
+            { "age": "young" },
+            { "dependents": "low" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "high" },
+            { "income_sum": "medium" }
           ]
         }
       ]
@@ -125,7 +173,14 @@
         {
           "and": [
             { "inflow": "low" },
-            { "income_sum": "low" }
+            { "income_sum": "low" },
+            { "age": "old" }
+          ]
+        },
+        {
+          "and": [
+            { "dependents": "high" },
+            { "income_sum": "medium" }
           ]
         }
       ]
@@ -144,7 +199,14 @@
         {
           "and": [
             { "inflow": "medium" },
-            { "income_sum": "medium" }
+            { "income_sum": "medium" },
+            { "age": "middle_aged" }
+          ]
+        },
+        {
+          "and": [
+            { "age": "middle_aged" },
+            { "income_sum": "high" }
           ]
         }
       ]
@@ -163,7 +225,14 @@
         {
           "and": [
             { "inflow": "high" },
-            { "income_sum": "high" }
+            { "income_sum": "high" },
+            { "age": "young" }
+          ]
+        },
+        {
+          "and": [
+            { "age": "young" },
+            { "income_sum": "medium" }
           ]
         }
       ]
