@@ -1,0 +1,173 @@
+[
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "inflow": "low" },
+            { "income_sum": "low" }
+          ]
+        },
+        {
+          "and": [
+            { "dependents": "high" },
+            { "age": "old" }
+          ]
+        }
+      ]
+    },
+    "then": { "h1": "up_to_100k" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "inflow": "medium" },
+            { "income_sum": "medium" }
+          ]
+        },
+        {
+          "and": [
+            { "dependents": "medium" },
+            { "age": "middle_aged" }
+          ]
+        }
+      ]
+    },
+    "then": { "h1": "up_to_200k" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "inflow": "high" },
+            { "income_sum": "high" }
+          ]
+        },
+        {
+          "and": [
+            { "dependents": "low" },
+            { "age": "young" }
+          ]
+        }
+      ]
+    },
+    "then": { "h1": "up_to_400k" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "inflow": "low" },
+            { "dependents": "high" }
+          ]
+        },
+        {
+          "and": [
+            { "income_sum": "low" },
+            { "age": "old" }
+          ]
+        }
+      ]
+    },
+    "then": { "h2": "rate_6k" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "inflow": "medium" },
+            { "dependents": "medium" }
+          ]
+        },
+        {
+          "and": [
+            { "income_sum": "medium" },
+            { "age": "middle_aged" }
+          ]
+        }
+      ]
+    },
+    "then": { "h2": "rate_4k" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "inflow": "high" },
+            { "dependents": "low" }
+          ]
+        },
+        {
+          "and": [
+            { "income_sum": "high" },
+            { "age": "young" }
+          ]
+        }
+      ]
+    },
+    "then": { "h2": "rate_2k" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "age": "old" },
+            { "dependents": "high" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "low" },
+            { "income_sum": "low" }
+          ]
+        }
+      ]
+    },
+    "then": { "h3": "term_10_years" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "age": "middle_aged" },
+            { "dependents": "medium" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "medium" },
+            { "income_sum": "medium" }
+          ]
+        }
+      ]
+    },
+    "then": { "h3": "term_20_years" }
+  },
+  {
+    "if": {
+      "or": [
+        {
+          "and": [
+            { "age": "young" },
+            { "dependents": "low" }
+          ]
+        },
+        {
+          "and": [
+            { "inflow": "high" },
+            { "income_sum": "high" }
+          ]
+        }
+      ]
+    },
+    "then": { "h3": "term_30_years" }
+  }
+]
