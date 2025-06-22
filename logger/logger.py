@@ -25,6 +25,7 @@ class ResultLogger:
         logging.info("User input parameters:")
         for k, v in params.items():
             logging.info(f"{k}: {v}")
+        logging.info(" ------------------ ")
 
     def log_config_loaded(self, config_files: Sequence[str]):
         logging.info("Loaded configuration files:")

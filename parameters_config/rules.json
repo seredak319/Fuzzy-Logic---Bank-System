@@ -104,6 +104,11 @@
             { "inflow": "low" },
             { "income_sum": "low" }
           ]
+        },
+        {
+          "or": [
+            { "dependents": "low" }
+          ]
         }
       ]
     },
@@ -130,6 +135,11 @@
             { "inflow": "medium" },
             { "income_sum": "high" }
           ]
+        },
+        {
+          "or": [
+            { "dependents": "medium" }
+          ]
         }
       ]
     },
@@ -142,6 +152,11 @@
           "and": [
             { "inflow": "high" },
             { "dependents": "low" }
+          ]
+        },
+        {
+          "or": [
+            { "dependents": "high" }
           ]
         },
         {
@@ -181,6 +196,11 @@
           "and": [
             { "dependents": "high" },
             { "income_sum": "medium" }
+          ]
+        },
+        {
+          "or": [
+            { "age": "old" }
           ]
         }
       ]
