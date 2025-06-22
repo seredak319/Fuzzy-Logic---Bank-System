@@ -1,19 +1,16 @@
-# sterowanie/controller.py
-
 import argparse
 from argparse import Namespace
 
 
 class CLIParams:
-
-    INFLOW_MIN      = 0.0
-    INFLOW_MAX      = 20000.0
-    INCOME_SUM_MIN  = 0.0
-    INCOME_SUM_MAX  = 40000.0
-    DEPENDENTS_MIN  = 0
-    DEPENDENTS_MAX  = 10
-    AGE_MIN         = 18
-    AGE_MAX         = 100
+    INFLOW_MIN = 0.0
+    INFLOW_MAX = 20000.0
+    INCOME_SUM_MIN = 0.0
+    INCOME_SUM_MAX = 40000.0
+    DEPENDENTS_MIN = 0
+    DEPENDENTS_MAX = 10
+    AGE_MIN = 18
+    AGE_MAX = 100
 
     @classmethod
     def parse_args(cls) -> Namespace:

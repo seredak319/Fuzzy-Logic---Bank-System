@@ -1,7 +1,7 @@
-# sterowanie/logger.py
 import os
 import logging
 from typing import Dict, Any, Sequence
+
 
 class ResultLogger:
     def __init__(self, results_dir: str = "results", result_filename: str = "result.txt"):
@@ -20,6 +20,12 @@ class ResultLogger:
 
     def _log_header(self):
         logging.info("=== Fuzzy Credit Decision Results ===")
+
+    def log_params_nf(self, params: Dict[str, Any]):
+        logging.info("--- Functions activations: ---")
+        for k, v in params.items():
+            logging.info(f"{k}: {v}")
+        logging.info(" ------------------ ")
 
     def log_params(self, params: Dict[str, Any]):
         logging.info("User input parameters:")

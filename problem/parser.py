@@ -1,5 +1,6 @@
 from .data_models import Variable, Label, Rule, Example, RepresentativeSet
 
+
 def build_problem(mf_defs, rule_defs, rep_defs):
     variables = {}
     for var_name, labels in mf_defs.items():

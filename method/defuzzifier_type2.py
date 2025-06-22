@@ -4,94 +4,117 @@ from typing import Dict, List, Any, Tuple
 
 
 class Type2Defuzzifier:
+
     def __init__(self, output_mfs: Dict[str, Dict[str, Any]]):
         self.output_mfs = output_mfs
 
     def defuzzify(self,
                   degrees: Dict[str, float],
                   decision: str) -> float:
-        scaled = self.scale_functions(degrees, decision)
-        aggregated = self.sum_scaled_functions(scaled)
-        regions = self.decompose_regions(aggregated)
+
+        # 1) Skalowanie
+        #   np:
+        #  z ->     [200000, 0], [300000, 1], [300000, 1], [300000, 1]
+        #  na ->    [[200000, 0.0], [300000, 0.6666666666666666], [300000, 0.6666666666666666], [300000, 0.6666666666666666]]
+        scaled = self._scale(degrees, decision)
+
+        # 2) Suma przeskalowanych funkcji
+        #   np:
+        #  "up_to_200k": [[100000, 0.0], [200000, 0.33], [300000, 0.0]],
+        #   "up_to_400k": [[200000, 0.0], [300000, 0.66], [300000, 0.66], [300000, 0.66]]
+        #
+        # Da rezultat -> [100000, 0], [200000, 0.33], [300000, 0.66], [300000, 0.66]
+        aggregated = self._aggregate(scaled)
+
+        # 3) Rozbijanie na regionty - Prostokąty i Trójkąty
+        regions = self._decompose_to_P_and_T(aggregated)
+
         num, den = 0.0, 0.0
-        for region in regions:
-            h_sr, w = self._centroid_and_weight(region)
+        for r in regions:
+            h_sr, w = self._centroid_and_weight(r)
             num += h_sr * w
             den += w
+
         return num / den if den else 0.0
 
-    def scale_functions(self,
-                        degrees: Dict[str, float],
-                        decision: str
-                        ) -> Dict[str, List[List[float]]]:
-        scaled = {}
-        for label, alpha in degrees.items():
-            if alpha <= 0:
+    def _scale(self,
+               degrees: Dict[str, float],
+               decision: str
+               ) -> Dict[str, List[List[float]]]:
+        out = {}
+        for lbl, α in degrees.items():
+            if α <= 0:
                 continue
-            pts = self.output_mfs[decision][label]['points']
-            scaled[label] = [[x, mu * alpha] for x, mu in pts]
-        return scaled
+            pts = self.output_mfs[decision][lbl]['points']
+            out[lbl] = [[x, μ * α] for x, μ in pts]
+        return out
 
-    def sum_scaled_functions(self,
-                             scaled_mfs: Dict[str, List[List[float]]]
-                             ) -> List[List[float]]:
-        xs = sorted({x for pts in scaled_mfs.values() for x, _ in pts})
-        aggregated = []
+    def _aggregate(self,
+                   scaled: Dict[str, List[List[float]]]
+                   ) -> List[List[float]]:
+        xs = sorted({x for pts in scaled.values() for x, _ in pts})
+        agg = []
         for x in xs:
-            mu_sum = sum(self._interp(pts, x) for pts in scaled_mfs.values())
-            aggregated.append([x, mu_sum])
-        return aggregated
+            μsum = sum(self._interp(pts, x) for pts in scaled.values())
+            agg.append([x, μsum])
+        return agg
 
-    def decompose_regions(self,
-                          aggregated: List[List[float]]
-                          ) -> List[Dict[str, Any]]:
-        regions = []
-        for (x0, y0), (x1, y1) in zip(aggregated, aggregated[1:]):
-            if y0 == y1:
-                regions.append({
-                    'shape': 'rectangle',
-                    'h_min': x0,
-                    'h_max': x1,
-                    'mu': y0
+    def _decompose_to_P_and_T(self,
+                              agg: List[List[float]]
+                              ) -> List[Dict[str, Any]]:
+        regs = []
+        for (x0, y0), (x1, y1) in zip(agg, agg[1:]):
+            span = x1 - x0
+            if abs(y0 - y1) < 1e-9:
+                # czysty prostokąt
+                regs.append({
+                    'shape': 'P',
+                    'h_min': x0, 'h_max': x1,
+                    'μ': y0
                 })
             else:
-                regions.append({
-                    'shape': 'triangle',
-                    'h_min': x0,
-                    'h_max': x1,
-                    'mu0': y0,
-                    'mu1': y1
+                # najpierw prostokąt o wysokości y_min
+                y_min = min(y0, y1)
+                regs.append({
+                    'shape': 'P',
+                    'h_min': x0, 'h_max': x1,
+                    'μ': y_min
                 })
-        return regions
+                # resztę jako trójkąt o wysokości Δy = |y1–y0|
+                Δy = abs(y1 - y0)
+                if y1 > y0:
+                    # rosnący trójkąt od 0→Δy
+                    regs.append({
+                        'shape': 'T',
+                        'h_min': x0, 'h_max': x1,
+                        'μ0': 0.0, 'μ1': Δy
+                    })
+                else:
+                    # malejący trójkąt od Δy→0
+                    regs.append({
+                        'shape': 'T',
+                        'h_min': x0, 'h_max': x1,
+                        'μ0': Δy, 'μ1': 0.0
+                    })
+        return regs
 
     def _centroid_and_weight(self,
-                             region: Dict[str, Any]
+                             r: Dict[str, Any]
                              ) -> Tuple[float, float]:
-        h_min = region['h_min']
-        h_max = region['h_max']
-        span = h_max - h_min
-
-        if region['shape'] == 'rectangle':
-            mu = region['mu']
-            h_sr = h_min + span / 2
-            w = mu * span
-
-        else:  # triangle
-            mu0 = region['mu0']
-            mu1 = region['mu1']
-
-            # sprawdzamy, czy trójkąt jest rosnący (mu1>mu0) czy malejący
-            if mu1 > mu0:
-                # rosnący fragment → centroida w 2/3 długości podstawy
-                h_sr = h_min + 2 / 3 * span
+        a, b = r['h_min'], r['h_max']
+        span = b - a
+        if r['shape'] == 'P':
+            μ = r['μ']
+            h_sr = a + span / 2
+            w = μ * span
+        else:
+            μ0, μ1 = r['μ0'], r['μ1']
+            w = 0.5 * abs(μ1 - μ0) * span
+            #   centroid trójkąta: jeśli rośnie → 2/3, jeśli maleje → 1/3
+            if μ1 > μ0:
+                h_sr = a + 2 / 3 * span
             else:
-                # malejący fragment → centroida w 1/3 długości podstawy
-                h_sr = h_min + 1 / 3 * span
-
-            delta_mu = abs(mu1 - mu0)
-            # waga trójkąta: 1/2 * podstawa * wysokość różnicy mu
-            w = 0.5 * delta_mu * span
-
+                h_sr = a + 1 / 3 * span
         return h_sr, w
 
     def _interp(self,
